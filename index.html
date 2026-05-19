@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI定性評価システム</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Hiragino Sans', sans-serif; background: #f9f6f2; color: #333; padding: 20px; max-width: 700px; margin: 0 auto; }
+    h1 { font-size: 22px; font-weight: bold; margin-bottom: 6px; }
+    .subtitle { font-size: 13px; color: #888; margin-bottom: 24px; }
+    .row { display: flex; gap: 16px; margin-bottom: 24px; }
+    .row > div { flex: 1; }
+    label { font-size: 13px; font-weight: bold; display: block; margin-bottom: 6px; }
+    select, textarea { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; background: white; }
+    .card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; border: 1px solid #eee; }
+    .card h2 { font-size: 16px; font-weight: bold; margin-bottom: 16px; }
+    .checklist-category { margin-bottom: 16px; }
+    .checklist-category h3 { font-size: 14px; font-weight: bold; color: #7a5c3a; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #f0e8de; }
+    .checklist-category label { font-weight: normal; font-size: 14px; display: flex; align-items: center; gap: 8px; padding: 4px 0; cursor: pointer; }
+    .checklist-category input[type="checkbox"] { width: 16px; height: 16px; accent-color: #7a5c3a; }
+    .btn-primary { background: #5c3d1e; color: white; border: none; border-radius: 50px; padding: 14px 32px; font-size: 15px; font-weight: bold; cursor: pointer; margin-right: 10px; }
+    .btn-primary:disabled { background: #ccc; cursor: not-allowed; }
+    #log { width: 100%; height: 120px; border-radius: 8px; border: 1px solid #ddd; padding: 10px; font-size: 13px; background: #fafafa; }
+    #status { margin: 10px 0; font-size: 13px; color: #e74c3c; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>評価AI デモ</h1>
+  <p class="subtitle">院とスタッフを選択して録音を開始してください。</p>
+
+  <div class="row">
+    <div>
+      <label>院</label>
+      <select id="clinicSelect">
+        <option value="">選択してください</option>
+        <option value="大阪院">大阪院</option>
+        <option value="東京院">東京院</option>
+      </select>
+    </div>
+    <div>
+      <label>名前</label>
+      <select id="staffSelect">
+        <option value="">選択してください</option>
+        <option value="山田 花子">山田 花子</option>
+        <option value="田中 亮">田中 亮</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>チェックリスト</h2>
+    <div class="checklist-category">
+      <h3>01 素直</h3>
+      <label><input type="checkbox"> 指摘やアドバイスを最後まで聞いている</label>
+      <label><input type="checkbox"> 指摘後、実際の行動に変化が見られる</label>
+      <label><input type="checkbox"> 言い訳や反論が先に出ていない</label>
+      <label><input type="checkbox"> 年齢や役職に関係なく学ぼうとしている</label>
+      <label><input type="checkbox"> 自分の正しさより目的・成果を優先している</label>
+      <label><input type="checkbox"> 同じ注意や指摘を繰り返されていない</label>
+    </div>
+    <div class="checklist-category">
+      <h3>02 行動スピード</h3>
+      <label><input type="checkbox"> 指示や課題に対してすぐに着手している</label>
+      <label><input type="checkbox"> 指示待ちではなく自ら仕事を取りに行っている</label>
+      <label><input type="checkbox"> 完璧を待たず、まず動いている</label>
+      <label><input type="checkbox"> 小さな判断を現場で止めずに処理している</label>
+      <label><input type="checkbox"> 忙しい時でも行動が止まらない</label>
+      <label><input type="checkbox"> 優先順位を自分で判断できている</label>
+    </div>
+    <div class="checklist-category">
+      <h3>03 振り返り・前進</h3>
+      <label><input type="checkbox"> 結果を感情ではなく事実で受け止めている</label>
+      <label><input type="checkbox"> ミスや失敗を隠さず共有している</label>
+      <label><input type="checkbox"> 原因を人ではなく工程で捉えている</label>
+      <label><input type="checkbox"> 振り返りを次の行動に反映している</label>
+      <label><input type="checkbox"> 同じミスや指摘を繰り返していない</label>
+      <label><input type="checkbox"> 成功事例も言語化して共有している</label>
+    </div>
+    <div class="checklist-category">
+      <h3>04 継続・挑戦</h3>
+      <label><input type="checkbox"> 決めた行動を一定期間継続している</label>
+      <label><input type="checkbox"> 成果が出ない時も行動量が極端に落ちない</label>
+      <label><input type="checkbox"> 失敗後も行動を再開している</label>
+      <label><input type="checkbox"> 新しい役割や課題に前向きに取り組んでいる</label>
+      <label><input type="checkbox"> 苦手なことから逃げずに向き合っている</label>
+      <label><input type="checkbox"> 小さな成功体験を積み重ねている</label>
+    </div>
+    <div class="checklist-category">
+      <h3>05 キッカケづくり</h3>
+      <label><input type="checkbox"> 相手の変化や反応をよく観察している</label>
+      <label><input type="checkbox"> 施術や接客に一工夫を加えている</label>
+      <label><input type="checkbox"> プラス一言・一動作が自然に出ている</label>
+      <label><input type="checkbox"> お客様や後輩の変化を喜んでいる</label>
+      <label><input type="checkbox"> 相手の立場で考えた行動ができている</label>
+      <label><input type="checkbox"> 感謝・信頼・指名・口コミにつながっている</label>
+    </div>
+    <div class="checklist-category">
+      <h3>06 凡事徹底</h3>
+      <label><input type="checkbox"> 挨拶、返事、表情が安定している</label>
+      <label><input type="checkbox"> 身だしなみ、清潔感にムラがない</label>
+      <label><input type="checkbox"> 時間、期限、約束を守っている</label>
+      <label><input type="checkbox"> 掃除、準備、片付けが丁寧</label>
+      <label><input type="checkbox"> 報連相が抜けなく行われている</label>
+      <label><input type="checkbox"> 忙しい時ほど基本行動が崩れない</label>
+      <label><input type="checkbox"> チームや空間の空気を整えようとしている</label>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>面談メモ</h2>
+    <textarea id="memo" rows="4" placeholder="自由にメモを記入してください"></textarea>
+  </div>
+
+  <div class="card">
+    <h2>録音</h2>
+    <div id="status"></div>
+    <div style="margin-top: 10px;">
+      <button class="btn-primary" id="startBtn">録音開始</button>
+      <button class="btn-primary" id="stopBtn" disabled>録音停止</button>
+    </div>
+    <br>
+    <textarea id="log" readonly placeholder="録音を開始すると文字起こしがここに表示されます"></textarea>
+  </div>
+
+  <script>
+    const $startBtn = document.getElementById('startBtn');
+    const $stopBtn = document.getElementById('stopBtn');
+    const $log = document.getElementById('log');
+    const $status = document.getElementById('status');
+    let rec = null;
+    let logText = '';
+
+    $startBtn.onclick = () => {
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SR) {
+        $status.textContent = 'このブラウザは音声認識に対応していません。Chromeを使用してください。';
+        return;
+      }
+      rec = new SR();
+      rec.lang = 'ja-JP';
+      rec.continuous = true;
+      rec.interimResults = true;
+
+      rec.onstart = () => {
+        $status.textContent = '🔴 録音中...';
+      };
+
+      rec.onresult = (event) => {
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          if (event.results[i].isFinal) {
+            const text = event.results[i][0].transcript;
+            logText += new Date().toLocaleTimeString() + '\n' + text + '\n\n';
+            $log.value = logText;
+          }
+        }
+      };
+
+      rec.onerror = (err) => {
+        $status.textContent = 'エラー: ' + err.error;
+      };
+
+      rec.onend = () => {
+        if (!$startBtn.disabled) return;
+        rec.start();
+      };
+
+      rec.start();
+      $startBtn.disabled = true;
+      $stopBtn.disabled = false;
+    };
+
+    $stopBtn.onclick = () => {
+      if (rec) rec.stop();
+      $status.textContent = '録音停止しました';
+      $startBtn.disabled = false;
+      $stopBtn.disabled = true;
+    };
+  </script>
+</body>
+</html>
