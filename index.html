@@ -25,11 +25,10 @@
     #status { margin: 10px 0; font-size: 13px; color: #e74c3c; font-weight: bold; }
     .score-bar { margin-top: 12px; background: #f0e8de; border-radius: 8px; height: 8px; }
     .score-bar-fill { background: #5c3d1e; border-radius: 8px; height: 8px; transition: width 0.3s; }
-    .score-label { font-size: 13px; color: #7a5c3a; font-weight: bold; margin-bottom: 4px; }
-    .total-score { background: #5c3d1e; color: white; border-radius: 12px; padding: 16px 20px; margin-bottom: 20px; text-align: center; }
-    .total-score h2 { font-size: 18px; margin-bottom: 4px; }
-    .total-score .score-num { font-size: 36px; font-weight: bold; }
-    </style>
+    .total-score { background: #fff8f3; color: #5c3d1e; border-radius: 12px; padding: 16px 20px; margin-bottom: 20px; text-align: center; border: 2px solid #f0e8de; }
+    .total-score h2 { font-size: 18px; margin-bottom: 4px; color: #7a5c3a; }
+    .total-score .score-num { font-size: 36px; font-weight: bold; color: #5c3d1e; }
+  </style>
 </head>
 <body>
   <h1>評価AI デモ</h1>
@@ -47,21 +46,21 @@
     <div>
       <label>名前</label>
       <select id="staffSelect">
-        <option value="">選択してください</option>
-        <option value="山田 花子">山田 花子</option>
-        <option value="田中 亮">田中 亮</option>
+        <option value="">院を先に選択してください</option>
       </select>
     </div>
   </div>
-<div class="total-score">
+
+  <div class="total-score">
     <h2>総合スコア</h2>
     <div class="score-num"><span id="total-score">0</span>/41</div>
   </div>
+
   <div class="card">
     <h2>チェックリスト</h2>
     <div class="checklist-category">
       <h3>01 素直 <span id="score-0">0/6</span></h3>
-    <div class="score-bar"><div class="score-bar-fill" id="bar-0" style="width:0%"></div></div>
+      <div class="score-bar"><div class="score-bar-fill" id="bar-0" style="width:0%"></div></div>
       <label><input type="checkbox"> 指摘やアドバイスを最後まで聞いている</label>
       <label><input type="checkbox"> 指摘後、実際の行動に変化が見られる</label>
       <label><input type="checkbox"> 言い訳や反論が先に出ていない</label>
@@ -71,7 +70,7 @@
     </div>
     <div class="checklist-category">
       <h3>02 行動スピード <span id="score-1">0/6</span></h3>
-    <div class="score-bar"><div class="score-bar-fill" id="bar-1" style="width:0%"></div></div>
+      <div class="score-bar"><div class="score-bar-fill" id="bar-1" style="width:0%"></div></div>
       <label><input type="checkbox"> 指示や課題に対してすぐに着手している</label>
       <label><input type="checkbox"> 指示待ちではなく自ら仕事を取りに行っている</label>
       <label><input type="checkbox"> 完璧を待たず、まず動いている</label>
@@ -80,8 +79,8 @@
       <label><input type="checkbox"> 優先順位を自分で判断できている</label>
     </div>
     <div class="checklist-category">
-     <h3>03 振り返り・前進 <span id="score-2">0/6</span></h3>
-    <div class="score-bar"><div class="score-bar-fill" id="bar-2" style="width:0%"></div></div>
+      <h3>03 振り返り・前進 <span id="score-2">0/6</span></h3>
+      <div class="score-bar"><div class="score-bar-fill" id="bar-2" style="width:0%"></div></div>
       <label><input type="checkbox"> 結果を感情ではなく事実で受け止めている</label>
       <label><input type="checkbox"> ミスや失敗を隠さず共有している</label>
       <label><input type="checkbox"> 原因を人ではなく工程で捉えている</label>
@@ -90,8 +89,8 @@
       <label><input type="checkbox"> 成功事例も言語化して共有している</label>
     </div>
     <div class="checklist-category">
-     <h3>04 継続・挑戦 <span id="score-3">0/6</span></h3>
-    <div class="score-bar"><div class="score-bar-fill" id="bar-3" style="width:0%"></div></div>
+      <h3>04 継続・挑戦 <span id="score-3">0/6</span></h3>
+      <div class="score-bar"><div class="score-bar-fill" id="bar-3" style="width:0%"></div></div>
       <label><input type="checkbox"> 決めた行動を一定期間継続している</label>
       <label><input type="checkbox"> 成果が出ない時も行動量が極端に落ちない</label>
       <label><input type="checkbox"> 失敗後も行動を再開している</label>
@@ -100,8 +99,8 @@
       <label><input type="checkbox"> 小さな成功体験を積み重ねている</label>
     </div>
     <div class="checklist-category">
-     <h3>05 キッカケづくり <span id="score-4">0/6</span></h3>
-    <div class="score-bar"><div class="score-bar-fill" id="bar-4" style="width:0%"></div></div>
+      <h3>05 キッカケづくり <span id="score-4">0/6</span></h3>
+      <div class="score-bar"><div class="score-bar-fill" id="bar-4" style="width:0%"></div></div>
       <label><input type="checkbox"> 相手の変化や反応をよく観察している</label>
       <label><input type="checkbox"> 施術や接客に一工夫を加えている</label>
       <label><input type="checkbox"> プラス一言・一動作が自然に出ている</label>
@@ -110,8 +109,8 @@
       <label><input type="checkbox"> 感謝・信頼・指名・口コミにつながっている</label>
     </div>
     <div class="checklist-category">
-     <h3>06 凡事徹底 <span id="score-5">0/7</span></h3>
-    <div class="score-bar"><div class="score-bar-fill" id="bar-5" style="width:0%"></div></div>
+      <h3>06 凡事徹底 <span id="score-5">0/7</span></h3>
+      <div class="score-bar"><div class="score-bar-fill" id="bar-5" style="width:0%"></div></div>
       <label><input type="checkbox"> 挨拶、返事、表情が安定している</label>
       <label><input type="checkbox"> 身だしなみ、清潔感にムラがない</label>
       <label><input type="checkbox"> 時間、期限、約束を守っている</label>
@@ -139,6 +138,34 @@
   </div>
 
   <script>
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbxFZUs7G_B2fr7pb0siZXNC5Sh19DW4LKtjnZNNvSCO-w9rdTZZfdWquRfgbIYIA32N/exec';
+
+    // 院を選択したらスタッフ一覧を取得
+    document.getElementById('clinicSelect').addEventListener('change', async function() {
+      const clinic = this.value;
+      const staffSelect = document.getElementById('staffSelect');
+      staffSelect.innerHTML = '<option value="">取得中...</option>';
+
+      if (!clinic) {
+        staffSelect.innerHTML = '<option value="">院を先に選択してください</option>';
+        return;
+      }
+
+      try {
+        const res = await fetch(GAS_URL + '?clinic=' + encodeURIComponent(clinic));
+        const data = await res.json();
+        staffSelect.innerHTML = '<option value="">選択してください</option>';
+        data.staffList.forEach(name => {
+          const opt = document.createElement('option');
+          opt.value = name;
+          opt.textContent = name;
+          staffSelect.appendChild(opt);
+        });
+      } catch (err) {
+        staffSelect.innerHTML = '<option value="">取得に失敗しました</option>';
+      }
+    });
+
     const $startBtn = document.getElementById('startBtn');
     const $stopBtn = document.getElementById('stopBtn');
     const $log = document.getElementById('log');
@@ -157,9 +184,7 @@
       rec.continuous = true;
       rec.interimResults = true;
 
-      rec.onstart = () => {
-        $status.textContent = '🔴 録音中...';
-      };
+      rec.onstart = () => { $status.textContent = '🔴 録音中...'; };
 
       rec.onresult = (event) => {
         for (let i = event.resultIndex; i < event.results.length; i++) {
@@ -171,14 +196,8 @@
         }
       };
 
-      rec.onerror = (err) => {
-        $status.textContent = 'エラー: ' + err.error;
-      };
-
-      rec.onend = () => {
-        if (!$startBtn.disabled) return;
-        rec.start();
-      };
+      rec.onerror = (err) => { $status.textContent = 'エラー: ' + err.error; };
+      rec.onend = () => { if (!$startBtn.disabled) return; rec.start(); };
 
       rec.start();
       $startBtn.disabled = true;
@@ -196,39 +215,26 @@
       const memo = document.getElementById('memo').value;
       const transcript = document.getElementById('log').value;
 
-      const params = new URLSearchParams({
-        clinic, staff, score, max: '41', transcript, memo
-      });
-
+      const params = new URLSearchParams({ clinic, staff, score, max: '41', transcript, memo });
       window.location.href = 'page2.html?' + params.toString();
     };
 
-    // スコア計算
     const categories = [
-      { id: 0, count: 6 },
-      { id: 1, count: 6 },
-      { id: 2, count: 6 },
-      { id: 3, count: 6 },
-      { id: 4, count: 6 },
-      { id: 5, count: 7 },
+      { id: 0, count: 6 }, { id: 1, count: 6 }, { id: 2, count: 6 },
+      { id: 3, count: 6 }, { id: 4, count: 6 }, { id: 5, count: 7 },
     ];
 
     function updateScore() {
       const checkboxGroups = document.querySelectorAll('.checklist-category');
       let total = 0;
-      let totalMax = 0;
-
       checkboxGroups.forEach((group, i) => {
         const boxes = group.querySelectorAll('input[type="checkbox"]');
         const checked = Array.from(boxes).filter(b => b.checked).length;
         const max = categories[i].count;
         total += checked;
-        totalMax += max;
-
         document.getElementById('score-' + i).textContent = checked + '/' + max;
         document.getElementById('bar-' + i).style.width = (checked / max * 100) + '%';
       });
-
       document.getElementById('total-score').textContent = total;
     }
 
