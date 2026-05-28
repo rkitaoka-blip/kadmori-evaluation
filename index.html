@@ -138,9 +138,11 @@
   </div>
 
   <script>
-    const GAS_URL = 'https://script.google.com/macros/s/AKfycbwUGUHC4PXO5AmqBjSdDhrcd0vF1hA3kin7M7B5DxlfG7HLCfDlMMt4auo1IoyzSv7G/exec';
+    const spreadsheetIds = {
+      '大阪院': '1FIG816UzGsRKZ7BUxH2rYzUAbj-NYsPvYNUhvdCeKE0',
+      '東京院': '13rriiBAqhyhGN2EeAxEpSTNLO2nxJCEWvc0BhspMxDI'
+    };
 
-    // 院を選択したらスタッフ一覧を取得
     document.getElementById('clinicSelect').addEventListener('change', async function() {
       const clinic = this.value;
       const staffSelect = document.getElementById('staffSelect');
@@ -151,32 +153,22 @@
         return;
       }
 
-     const spreadsheetIds = {
-        '大阪院': '1FIG816UzGsRKZ7BUxH2rYzUAbj-NYsPvYNUhvdCeKE0',
-        '東京院': '13rriiBAqhyhGN2EeAxEpSTNLO2nxJCEWvc0BhspMxDI'
-      };
-
       try {
         const ssId = spreadsheetIds[clinic];
-        const url = `https://docs.google.com/spreadsheets/d/${ssId}/gviz/tq?tqx=out:json&sheet=Sheet1`;
+        const url = `https://docs.google.com/spreadsheets/d/${ssId}/gviz/tq?tqx=out:json`;
         const res = await fetch(url);
         const text = await res.text();
         const json = JSON.parse(text.replace('/*O_o*/', '').replace('google.visualization.Query.setResponse(', '').replace(');', ''));
         const rows = json.table.rows;
         staffSelect.innerHTML = '<option value="">選択してください</option>';
         rows.forEach(row => {
-          const name = row.c[1] && row.c[1].v;
+          const name = row.c[0] && row.c[0].v;
           if (name) {
             const opt = document.createElement('option');
             opt.value = name;
             opt.textContent = name;
             staffSelect.appendChild(opt);
           }
-        });
-          const opt = document.createElement('option');
-          opt.value = name;
-          opt.textContent = name;
-          staffSelect.appendChild(opt);
         });
       } catch (err) {
         staffSelect.innerHTML = '<option value="">取得に失敗しました</option>';
@@ -200,9 +192,7 @@
       rec.lang = 'ja-JP';
       rec.continuous = true;
       rec.interimResults = true;
-
       rec.onstart = () => { $status.textContent = '🔴 録音中...'; };
-
       rec.onresult = (event) => {
         for (let i = event.resultIndex; i < event.results.length; i++) {
           if (event.results[i].isFinal) {
@@ -212,10 +202,8 @@
           }
         }
       };
-
       rec.onerror = (err) => { $status.textContent = 'エラー: ' + err.error; };
       rec.onend = () => { if (!$startBtn.disabled) return; rec.start(); };
-
       rec.start();
       $startBtn.disabled = true;
       $stopBtn.disabled = false;
@@ -225,13 +213,11 @@
       if (rec) rec.stop();
       $startBtn.disabled = false;
       $stopBtn.disabled = true;
-
       const clinic = document.getElementById('clinicSelect').value;
       const staff = document.getElementById('staffSelect').value;
       const score = document.getElementById('total-score').textContent;
       const memo = document.getElementById('memo').value;
       const transcript = document.getElementById('log').value;
-
       const params = new URLSearchParams({ clinic, staff, score, max: '41', transcript, memo });
       window.location.href = 'page2.html?' + params.toString();
     };
