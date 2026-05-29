@@ -11,23 +11,28 @@
     .subtitle { font-size: 13px; color: #888; margin-bottom: 24px; }
     .card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; border: 1px solid #eee; }
     .card h2 { font-size: 16px; font-weight: bold; margin-bottom: 16px; color: #5c3d1e; }
-    .ai-comment { background: #fff8f3; border-left: 4px solid #7a5c3a; padding: 16px; border-radius: 8px; font-size: 14px; line-height: 1.8; margin-bottom: 16px; }
-    .ai-rank { font-size: 48px; font-weight: bold; color: #5c3d1e; text-align: center; padding: 16px; }
-    .rank-buttons { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 16px; }
-    .rank-btn { width: 60px; height: 60px; border-radius: 50%; border: 2px solid #ddd; background: white; font-size: 20px; font-weight: bold; cursor: pointer; color: #5c3d1e; }
-    .rank-btn.selected { background: #5c3d1e; color: white; border-color: #5c3d1e; }
-    .btn-primary { background: #5c3d1e; color: white; border: none; border-radius: 50px; padding: 14px 32px; font-size: 15px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; }
-    .btn-primary:disabled { background: #ccc; cursor: not-allowed; }
-    .loading { text-align: center; color: #7a5c3a; font-size: 14px; padding: 20px; }
     .info-row { display: flex; justify-content: space-between; font-size: 14px; padding: 8px 0; border-bottom: 1px solid #f0e8de; }
     .info-row:last-child { border-bottom: none; }
     .info-label { color: #888; }
     .info-value { font-weight: bold; color: #333; }
+    .category-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0e8de; }
+    .category-row:last-child { border-bottom: none; }
+    .category-name { font-size: 14px; font-weight: bold; color: #5c3d1e; flex: 1; }
+    .category-score { font-size: 13px; color: #888; margin-right: 12px; }
+    .ai-badge { background: #fff8f3; border: 1px solid #f0e8de; border-radius: 20px; padding: 4px 12px; font-size: 13px; font-weight: bold; color: #5c3d1e; margin-right: 8px; }
+    .rank-btns { display: flex; gap: 6px; }
+    .rank-btn { width: 36px; height: 36px; border-radius: 50%; border: 2px solid #ddd; background: white; font-size: 13px; font-weight: bold; cursor: pointer; color: #5c3d1e; }
+    .rank-btn.selected { background: #5c3d1e; color: white; border-color: #5c3d1e; }
+    .total-section { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 12px; }
+    .total-btn { width: 56px; height: 56px; border-radius: 50%; border: 2px solid #ddd; background: white; font-size: 18px; font-weight: bold; cursor: pointer; color: #5c3d1e; }
+    .total-btn.selected { background: #5c3d1e; color: white; border-color: #5c3d1e; }
+    .btn-primary { background: #5c3d1e; color: white; border: none; border-radius: 50px; padding: 14px 32px; font-size: 15px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; }
+    .btn-primary:disabled { background: #ccc; cursor: not-allowed; }
   </style>
 </head>
 <body>
   <h1>AI評価結果</h1>
-  <p class="subtitle">AIによる評価提案をもとに、上司が最終評価を決定してください。</p>
+  <p class="subtitle">AIの提案を参考に、上司が最終評価を決定してください。</p>
 
   <div class="card">
     <h2>面談情報</h2>
@@ -40,31 +45,28 @@
       <span class="info-value" id="staff-name">-</span>
     </div>
     <div class="info-row">
-      <span class="info-label">チェックリストスコア</span>
+      <span class="info-label">総合スコア</span>
       <span class="info-value" id="checklist-score">-</span>
     </div>
   </div>
 
   <div class="card">
-    <h2>🤖 AIによる評価提案</h2>
-    <div id="ai-loading" class="loading">AIが評価を生成中...</div>
-    <div id="ai-result" style="display:none;">
-      <div class="ai-rank" id="ai-rank">-</div>
-      <div class="ai-comment" id="ai-comment"></div>
-    </div>
+    <h2>📊 カテゴリ別評価</h2>
+    <p style="font-size:13px; color:#888; margin-bottom:16px;">AIの提案（左）を参考に、上司が最終評価（右）を選んでください</p>
+    <div id="category-list"></div>
   </div>
 
   <div class="card">
-    <h2>👤 上司による最終評価</h2>
-    <p style="font-size:13px; color:#888; margin-bottom:12px;">AIの提案を参考に最終評価を選んでください</p>
-    <div class="rank-buttons">
-      <button class="rank-btn" onclick="selectRank('S')">S</button>
-      <button class="rank-btn" onclick="selectRank('A')">A</button>
-      <button class="rank-btn" onclick="selectRank('B')">B</button>
-      <button class="rank-btn" onclick="selectRank('C')">C</button>
-      <button class="rank-btn" onclick="selectRank('D')">D</button>
+    <h2>👤 総合評価</h2>
+    <p style="font-size:13px; color:#888; margin-bottom:12px;">全カテゴリを踏まえた最終評価を選んでください</p>
+    <div class="total-section">
+      <button class="total-btn" onclick="selectTotal('S')">S</button>
+      <button class="total-btn" onclick="selectTotal('A')">A</button>
+      <button class="total-btn" onclick="selectTotal('B')">B</button>
+      <button class="total-btn" onclick="selectTotal('C')">C</button>
+      <button class="total-btn" onclick="selectTotal('D')">D</button>
     </div>
-    <p id="selected-rank" style="text-align:center; margin-top:12px; font-size:14px; color:#7a5c3a; font-weight:bold;"></p>
+    <p id="selected-total" style="text-align:center; margin-top:12px; font-size:14px; color:#7a5c3a; font-weight:bold;"></p>
     <textarea id="manager-comment" rows="3" placeholder="コメントを入力（任意）" style="width:100%; margin-top:12px; padding:10px; border:1px solid #ddd; border-radius:8px; font-size:14px;"></textarea>
     <button class="btn-primary" id="saveBtn" onclick="saveResult()" disabled>この評価を保存する</button>
   </div>
@@ -77,31 +79,86 @@
     const maxScore = params.get('max') || '41';
     const transcript = params.get('transcript') || '';
     const memo = params.get('memo') || '';
+    const categoryScores = (params.get('categoryScores') || '0,0,0,0,0,0').split(',').map(Number);
 
     document.getElementById('clinic-name').textContent = clinic;
     document.getElementById('staff-name').textContent = staff;
     document.getElementById('checklist-score').textContent = score + '/' + maxScore;
 
-    let selectedRank = '';
+    const categories = [
+      { name: '01 素直', max: 6 },
+      { name: '02 行動スピード', max: 6 },
+      { name: '03 振り返り・前進', max: 6 },
+      { name: '04 継続・挑戦', max: 6 },
+      { name: '05 キッカケづくり', max: 6 },
+      { name: '06 凡事徹底', max: 7 },
+    ];
 
-    function selectRank(rank) {
-      selectedRank = rank;
-      document.querySelectorAll('.rank-btn').forEach(btn => btn.classList.remove('selected'));
-      event.target.classList.add('selected');
-      document.getElementById('selected-rank').textContent = '選択中：' + rank + '評価';
-      document.getElementById('saveBtn').disabled = false;
+    const managerRanks = {};
+    let selectedTotal = '';
+
+    function getAutoRank(checked, max) {
+      const ratio = checked / max;
+      if (ratio >= 0.8) return 'A';
+      if (ratio >= 0.5) return 'B';
+      return 'C';
     }
+
+    function selectCategoryRank(index, rank) {
+      managerRanks[index] = rank;
+      document.querySelectorAll(`.rank-btn[data-index="${index}"]`).forEach(btn => {
+        btn.classList.toggle('selected', btn.dataset.rank === rank);
+      });
+      checkAllSelected();
+    }
+
+    function selectTotal(rank) {
+      selectedTotal = rank;
+      document.querySelectorAll('.total-btn').forEach(btn => {
+        btn.classList.toggle('selected', btn.textContent === rank);
+      });
+      document.getElementById('selected-total').textContent = '選択中：' + rank + '評価';
+      checkAllSelected();
+    }
+
+    function checkAllSelected() {
+      const allSelected = Object.keys(managerRanks).length === categories.length && selectedTotal;
+      document.getElementById('saveBtn').disabled = !allSelected;
+    }
+
+    // カテゴリ一覧を描画
+    const list = document.getElementById('category-list');
+    categories.forEach((cat, i) => {
+      const checked = categoryScores[i] || 0;
+      const autoRank = getAutoRank(checked, cat.max);
+
+      const row = document.createElement('div');
+      row.className = 'category-row';
+      row.innerHTML = `
+        <span class="category-name">${cat.name}</span>
+        <span class="category-score">${checked}/${cat.max}</span>
+        <span class="ai-badge">AI: ${autoRank}</span>
+        <div class="rank-btns">
+          ${['A','B','C'].map(r => `
+            <button class="rank-btn" data-index="${i}" data-rank="${r}" onclick="selectCategoryRank(${i}, '${r}')">${r}</button>
+          `).join('')}
+        </div>
+      `;
+      list.appendChild(row);
+    });
 
     async function saveResult() {
       const comment = document.getElementById('manager-comment').value;
-      const aiRank = document.getElementById('ai-rank').textContent.replace('評価', '').trim();
+      const categoryRankStr = categories.map((_, i) => managerRanks[i] || '-').join(',');
 
       const data = {
         clinic, staff,
         date: new Date().toLocaleDateString('ja-JP'),
         score: score + '/' + maxScore,
-        aiRank, managerRank: selectedRank,
-        managerComment: comment, transcript, memo
+        aiRank: categoryRankStr,
+        managerRank: selectedTotal,
+        managerComment: comment,
+        transcript, memo
       };
 
       document.getElementById('saveBtn').textContent = '保存中...';
@@ -121,44 +178,6 @@
         document.getElementById('saveBtn').disabled = false;
       }
     }
-
-    async function generateAIEvaluation() {
-      const prompt = `あなたは美容クリニックのスタッフ評価の専門家です。以下の情報をもとに、スタッフの評価をしてください。
-
-スタッフ名：${staff}
-チェックリストスコア：${score}/${maxScore}
-面談メモ：${memo}
-面談の文字起こし：${transcript}
-
-以下の形式で回答してください：
-1行目：S/A/B/C/Dのいずれか1文字のみ
-2行目以降：200字以内で評価コメント（良い点・課題・次回への期待を含める）`;
-
-      try {
-        const response = await fetch('https://api.anthropic.com/v1/messages', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            model: 'claude-sonnet-4-20250514',
-            max_tokens: 1000,
-            messages: [{ role: 'user', content: prompt }]
-          })
-        });
-        const data = await response.json();
-        const text = data.content[0].text;
-        const lines = text.trim().split('\n');
-        const rank = lines[0].trim();
-        const comment = lines.slice(1).join('\n').trim();
-        document.getElementById('ai-loading').style.display = 'none';
-        document.getElementById('ai-result').style.display = 'block';
-        document.getElementById('ai-rank').textContent = rank + '評価';
-        document.getElementById('ai-comment').textContent = comment;
-      } catch (err) {
-        document.getElementById('ai-loading').textContent = 'AI評価の生成に失敗しました。手動で評価を選んでください。';
-      }
-    }
-
-    generateAIEvaluation();
   </script>
 </body>
 </html>

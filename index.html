@@ -218,7 +218,18 @@
       const score = document.getElementById('total-score').textContent;
       const memo = document.getElementById('memo').value;
       const transcript = document.getElementById('log').value;
-      const params = new URLSearchParams({ clinic, staff, score, max: '41', transcript, memo });
+      // カテゴリ別スコアを取得
+      const categoryScores = [];
+      document.querySelectorAll('.checklist-category').forEach((group, i) => {
+        const boxes = group.querySelectorAll('input[type="checkbox"]');
+        const checked = Array.from(boxes).filter(b => b.checked).length;
+        categoryScores.push(checked);
+      });
+
+      const params = new URLSearchParams({ 
+        clinic, staff, score, max: '41', transcript, memo,
+        categoryScores: categoryScores.join(',')
+      });
       window.location.href = 'page2.html?' + params.toString();
     };
 
