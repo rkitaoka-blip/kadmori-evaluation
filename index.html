@@ -51,6 +51,17 @@
     </div>
   </div>
 
+  <div class="card">
+    <h2>録音</h2>
+    <div id="status"></div>
+    <div style="margin-top: 10px;">
+      <button class="btn-primary" id="startBtn">録音開始</button>
+      <button class="btn-primary" id="stopBtn" disabled>録音停止</button>
+    </div>
+    <br>
+    <textarea id="log" readonly placeholder="録音を開始すると文字起こしがここに表示されます"></textarea>
+  </div>
+
   <div class="total-score">
     <h2>総合スコア</h2>
     <div class="score-num"><span id="total-score">0</span>/41</div>
@@ -124,17 +135,6 @@
   <div class="card">
     <h2>面談メモ</h2>
     <textarea id="memo" rows="4" placeholder="自由にメモを記入してください"></textarea>
-  </div>
-
-  <div class="card">
-    <h2>録音</h2>
-    <div id="status"></div>
-    <div style="margin-top: 10px;">
-      <button class="btn-primary" id="startBtn">録音開始</button>
-      <button class="btn-primary" id="stopBtn" disabled>録音停止</button>
-    </div>
-    <br>
-    <textarea id="log" readonly placeholder="録音を開始すると文字起こしがここに表示されます"></textarea>
   </div>
 
   <script>
@@ -213,12 +213,13 @@
       if (rec) rec.stop();
       $startBtn.disabled = false;
       $stopBtn.disabled = true;
+
       const clinic = document.getElementById('clinicSelect').value;
       const staff = document.getElementById('staffSelect').value;
       const score = document.getElementById('total-score').textContent;
       const memo = document.getElementById('memo').value;
       const transcript = document.getElementById('log').value;
-      // カテゴリ別スコアを取得
+
       const categoryScores = [];
       document.querySelectorAll('.checklist-category').forEach((group, i) => {
         const boxes = group.querySelectorAll('input[type="checkbox"]');
@@ -226,7 +227,7 @@
         categoryScores.push(checked);
       });
 
-      const params = new URLSearchParams({ 
+      const params = new URLSearchParams({
         clinic, staff, score, max: '41', transcript, memo,
         categoryScores: categoryScores.join(',')
       });
