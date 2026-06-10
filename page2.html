@@ -47,6 +47,10 @@
       <span class="info-value" id="staff-name">-</span>
     </div>
     <div class="info-row">
+      <span class="info-label">評価者</span>
+      <span class="info-value" id="evaluator-name">-</span>
+    </div>
+    <div class="info-row">
       <span class="info-label">総合スコア</span>
       <span class="info-value" id="checklist-score">-</span>
     </div>
@@ -77,14 +81,17 @@
     const params = new URLSearchParams(window.location.search);
     const clinic = params.get('clinic') || '-';
     const staff = params.get('staff') || '-';
+    const evaluator = params.get('evaluator') || '-';
     const score = params.get('score') || '0';
     const maxScore = params.get('max') || '41';
     const transcript = params.get('transcript') || '';
     const memo = params.get('memo') || '';
+    const checklistDetail = params.get('checklistDetail') || '';
     const categoryScores = (params.get('categoryScores') || '0,0,0,0,0,0').split(',').map(Number);
 
     document.getElementById('clinic-name').textContent = clinic;
     document.getElementById('staff-name').textContent = staff;
+    document.getElementById('evaluator-name').textContent = evaluator;
     document.getElementById('checklist-score').textContent = score + '/' + maxScore;
 
     const categories = [
@@ -132,7 +139,6 @@
     categories.forEach((cat, i) => {
       const checked = categoryScores[i] || 0;
       const autoRank = getAutoRank(checked, cat.max);
-
       const block = document.createElement('div');
       block.className = 'category-block';
       block.innerHTML = `
@@ -153,21 +159,18 @@
 
     async function saveResult() {
       const comment = document.getElementById('manager-comment').value;
-      const categoryRankStr = categories.map((_, i) => managerRanks[i] || '-').join(',');
+      const categoryRanks = categories.map((_, i) => managerRanks[i] || '-').join(',');
       const categoryReasons = categories.map((_, i) => {
         return document.getElementById('reason-' + i).value || '';
       }).join('|');
 
       const data = {
-        clinic, staff,
-        date: new Date().toLocaleDateString('ja-JP'),
-        score: score + '/' + maxScore,
-        aiRank: categoryRankStr,
-        managerRank: selectedTotal,
-        managerComment: comment,
+        clinic, staff, evaluator,
+        transcript, memo, checklistDetail,
+        categoryRanks,
         categoryReasons,
-transcript, memo,
-checklistDetail: categories.map((cat, i) => cat.name + ': ' + (categoryScores[i] || 0) + '/' + cat.max).join('\n')
+        totalRank: selectedTotal,
+        totalComment: comment
       };
 
       document.getElementById('saveBtn').textContent = '保存中...';
@@ -179,7 +182,7 @@ checklistDetail: categories.map((cat, i) => cat.name + ': ' + (categoryScores[i]
           mode: 'no-cors',
           body: JSON.stringify(data)
         });
-        alert('保存しました！Googleドライブをご確認ください。');
+        alert('保存しました！Googleドライブとスプレッドシートをご確認ください。');
       } catch (err) {
         alert('保存に失敗しました：' + err.message);
       } finally {
