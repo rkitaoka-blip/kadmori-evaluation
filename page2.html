@@ -38,22 +38,10 @@
 
   <div class="card">
     <h2>面談情報</h2>
-    <div class="info-row">
-      <span class="info-label">院</span>
-      <span class="info-value" id="clinic-name">-</span>
-    </div>
-    <div class="info-row">
-      <span class="info-label">スタッフ</span>
-      <span class="info-value" id="staff-name">-</span>
-    </div>
-    <div class="info-row">
-      <span class="info-label">評価者</span>
-      <span class="info-value" id="evaluator-name">-</span>
-    </div>
-    <div class="info-row">
-      <span class="info-label">総合スコア</span>
-      <span class="info-value" id="checklist-score">-</span>
-    </div>
+    <div class="info-row"><span class="info-label">院</span><span class="info-value" id="clinic-name">-</span></div>
+    <div class="info-row"><span class="info-label">スタッフ</span><span class="info-value" id="staff-name">-</span></div>
+    <div class="info-row"><span class="info-label">評価者</span><span class="info-value" id="evaluator-name">-</span></div>
+    <div class="info-row"><span class="info-label">総合スコア</span><span class="info-value" id="checklist-score">-</span></div>
   </div>
 
   <div class="card">
@@ -78,16 +66,17 @@
   </div>
 
   <script>
-    const params = new URLSearchParams(window.location.search);
-    const clinic = params.get('clinic') || '-';
-    const staff = params.get('staff') || '-';
-    const evaluator = params.get('evaluator') || '-';
-    const score = params.get('score') || '0';
-    const maxScore = params.get('max') || '41';
-    const transcript = params.get('transcript') || '';
-    const memo = params.get('memo') || '';
-    const checklistDetail = params.get('checklistDetail') || '';
-    const categoryScores = (params.get('categoryScores') || '0,0,0,0,0,0').split(',').map(Number);
+    // ★ URLの代わりにlocalStorageから取得
+    const saved = JSON.parse(localStorage.getItem('evalData') || '{}');
+    const clinic = saved.clinic || '-';
+    const staff = saved.staff || '-';
+    const evaluator = saved.evaluator || '-';
+    const score = saved.score || '0';
+    const maxScore = saved.max || '41';
+    const transcript = saved.transcript || '';
+    const memo = saved.memo || '';
+    const checklistDetail = saved.checklistDetail || '';
+    const categoryScores = (saved.categoryScores || '0,0,0,0,0,0').split(',').map(Number);
 
     document.getElementById('clinic-name').textContent = clinic;
     document.getElementById('staff-name').textContent = staff;
@@ -182,6 +171,8 @@
           mode: 'no-cors',
           body: JSON.stringify(data)
         });
+        // 保存後にlocalStorageをクリア
+        localStorage.removeItem('evalData');
         alert('保存しました！Googleドライブとスプレッドシートをご確認ください。');
         window.location.href = 'index.html';
       } catch (err) {
