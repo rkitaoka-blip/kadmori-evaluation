@@ -3055,7 +3055,135 @@ GitHubのリポジトリページを開く
 
 どちらで進めますか？
 
+スクリーンショット 2026-06-30 11.00.09.png
+なんかここの6角形のミニグラフみたいなのはいらないかも
+あとは、評価者がみやすいように、
+スタッフがLINEで見れるって言っていたシートも自動生成ボタンを押したらそのままシートを作成してくれるシステムにもしたいです
+LIN Eに送れるように設計したいけど、一旦は後回しにして、柵にグラフと削除することと、スタッフが自分の評価を見れるようなシートを作るボタン、生成までをしたい
 
+11:03
+六角形のグラフ、ちゃんと反映されていますね！ただ、ご指摘の通り見直しましょう。
+
+要望を整理させてください。
+
+六角形のミニグラフを削除する（一覧画面から）
+「スタッフ向け評価シート」を自動生成するボタンを追加する ― 押すと、そのスタッフ用に「LINEで見せても良い内容（AI評価のポジティブな部分など）」だけをまとめたシートが作られる
+LINE送信そのものは後回しで、まず**「生成する」ボタンを押したら、スタッフに見せる用のシートが出来上がる**ところまで作る、という理解で合っていますか？
+
+ここで1つ確認したいです。「シート」というのは、次のどれに近いイメージでしょうか？
+
+Q: 「スダッフ向け評価シート」というのは、どのイメージに近いですか？
+A: 画像で一目見たら何が良くて何を改善しないといけないのかわかるような、簡単で見やすいシート、画像
+
+11:05
+よく分かりました。「シート（表）」ではなく、画像として見せられる、シンプルで見やすい評価カードということですね。LINEで送る未来も考えると、これは理にかなっています。LINEは画像をそのまま表示できるので、文章をだらだら送るより、パッと見て分かる「画像1枚」の方が圧倒的に伝わりやすいです。
+
+整理すると、今回作るのはこうです。
+
+評価者がダッシュボードで「画像生成」ボタンを押すと、そのスタッフ用に「良かった点」「改善ポイント」「次回アクション」だけをまとめた、見やすい画像が作られる（点数の生データや評価者の生コメントは含まない、スタッフのやる気を削がない内容）。
+
+ここで1つだけ確認させてください。生成された画像は、最終的にどうなれば良いですか？
+
+Q: 生成された画像、評価者はどうやって手に入れますか？
+A: UIの中にシート生成ボタンを作っておいて、そこお押したら画像が見れる
+
+11:10
+なるほど、よく分かりました。ボタンを押すと、その場に画像が表示される（保存はブラウザの標準機能でOK）というシンプルな形ですね。
+
+これは実装できます。やり方としては、HTML上に「スタッフ用評価カード」を一旦描いて、それを画像として書き出す、という流れになります。表示してすぐ見られて、必要ならそのまま画像保存もできます。
+
+進める前に、最後に1点だけ確認させてください。この**画像の見た目（デザイン）**についてです。
+
+Q: 画像の中身、何を入れたいですか？
+A: 総合ランクはどう思いますか？なんかあんまり自分だったら見たくないんですけど
+
+11:10
+すごく大事な視点ですね。私もその感覚に賛成です。
+
+考えてみると、ランク（S・A・B・C）は本来「給与や評価会議のための、社内向けの判定」です。それをスタッフ本人に見せると、良かった点や次のアクションより先に「自分はBなんだ…」という数字だけが頭に残ってしまう可能性があります。せっかく前向きなフィードバックを伝えたいのに、ランク表示がそれを台無しにしてしまうリスクがあります。
+
+なので、こちらの方針をおすすめします。
+
+スタッフ向けの画像には、ランクも点数も一切入れない。 入れるのは「面談要約」「良かった点」「次回アクション」の3つだけ（さっき選んでいただいた通りです）。改善ポイントも、書き方によっては受け取り方が重くなりやすいので、「次回アクション」という前向きな言葉に変換して伝える形にします（実際、今のAI評価にはすでに「改善ポイント」と「次回アクション」が別々にあるので、スタッフ向けには次回アクションだけを使う、という整理です）。
+
+この方針でよければ、進めます。
+
+画像に入れる内容（確定）
+
+スタッフ名・面談日
+面談要約（今月の振り返り）
+良かった点
+次回アクション
+入れないもの
+
+総合ランク（S/A/B/C）
+カテゴリ別の点数
+評価者の生コメント
+この内容で、デザインを組んで作ります。よろしいですか？
+
+はい
+
+11:11
+では、ダッシュボードの修正を進めます。まず六角形グラフを削除し、次に「スタッフ向け評価カード生成」ボタンと、その画像表示の仕組みを追加します。
+
+
+3個のファイルを編集しました, コマンドを実行しました
+3個のファイルを編集しました, コマンドを実行しました
+getClinicが先に来ているので、削除する範囲を直します。
+
+
+ファイルを表示しました, ファイルを編集しました
+ファイルを表示しました, ファイルを編集しました
+六角形を削除できました。次に、詳細画面に「スタッフ向け評価カードを生成」ボタンと、その画像表示機能を追加します。
+
+
+コマンドを実行しました, ファイルを表示しました
+コマンドを実行しました, ファイルを表示しました
+各面談データをJSとして保持し、各履歴項目に「スタッフ向け評価カードを生成」ボタンを追加します。クリック時にその面談データを使ってカード画像をその場で描画します。
+
+
+Store history in global variable for the card generator to access, and add a generate-card button to each history item
+Store history in global variable for the card generator to access, and add a generate-card button to each history item
+次に、ボタンのスタイルと、カード生成・モーダル表示のロジックを追加します。
+
+
+Add styles for the generate-card button and the staff card image modal
+Add styles for the generate-card button and the staff card image modal
+次に、html2canvasライブラリを読み込んで、カードを生成・表示・保存するJS関数を追加します。
+
+
+2個のファイルを編集しました
+2個のファイルを編集しました
+構文を確認します。
+
+
+Extract and syntax-check the embedded JS
+Extract and syntax-check the embedded JS
+構文は問題ありません。完成したファイルを共有します。
+
+
+コマンドを実行しました, ファイルを読み取りました
+コマンドを実行しました, ファイルを読み取りました
+2点、対応しました。
+
+①六角形のミニグラフを削除 ― 一覧画面はシンプルに、名前・最終面談日・評価者・総合ランクのみになりました。
+
+②「スタッフ向け評価カードを生成」ボタンを追加 ― 詳細画面の、AI評価がある面談履歴それぞれに、ボタンを追加しました。押すと、こういう流れになります。
+
+画面にポップアップが出て、カードのプレビューが表示される
+カードの内容は、ご相談した通り**「今月の振り返り」「良かった点」「次のアクション」の3つだけ**（ランクも点数も評価者の生コメントも入りません）
+「画像として保存」を押すと、PNG画像としてダウンロードされる（LINEで送るときはこの画像を使えます）
+カードのデザインも、ダッシュボード本体と同じ温かみのあるテイストで揃えています。
+
+ファイルを確認してみてください。実際にこのファイルだけではGASからデータを取れないので（テスト用のサーバーURLが必要）、本当の動作確認はGitHubに反映してからになります。
+
+前回お伝えした通り、GitHubの dashboard.html をこのファイルの内容で置き換えてください（方法B：ダウンロード→アップロードでも、方法A：貼り替えでもどちらでもOKです）。
+
+反映できたら、実際の画面で「スタッフ向け評価カードを生成」ボタンを押してみて、見た目がどうか教えてください。
+
+
+Dashboard
+コード · HTML 
 
 
 
@@ -3074,6 +3202,7 @@ Dashboard · HTML
   <title>カドモリ AI人事評価 ダッシュボード</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     :root {
       --bg: #FAF7F2;
@@ -3194,8 +3323,6 @@ Dashboard · HTML
     .staff-info { flex: 1; min-width: 0; }
     .staff-name { font-size: 15px; font-weight: 700; color: var(--ink); }
     .staff-meta { font-size: 12px; color: var(--ink-faint); margin-top: 4px; }
- 
-    .hexgrid { flex-shrink: 0; }
  
     .rank-badge {
       display: inline-flex;
@@ -3405,6 +3532,115 @@ Dashboard · HTML
     }
     .doc-link:hover { text-decoration: underline; }
  
+    .gen-card-btn {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--accent-deep);
+      background: var(--accent-soft);
+      border: 1px solid #ecd9ca;
+      border-radius: 8px;
+      padding: 8px 14px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .gen-card-btn:hover { background: #ecd9ca; }
+ 
+    .card-modal-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(42, 36, 32, 0.55);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 100;
+      padding: 24px;
+    }
+    .card-modal-box {
+      background: var(--surface);
+      border-radius: 18px;
+      padding: 20px;
+      max-width: 420px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .card-modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .card-modal-actions button {
+      flex: 1;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 11px;
+      border-radius: 9px;
+      cursor: pointer;
+      font-family: inherit;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--ink);
+    }
+    .card-modal-actions button.primary {
+      background: var(--accent);
+      color: white;
+      border: none;
+    }
+ 
+    .staff-card {
+      width: 100%;
+      background: linear-gradient(135deg, #FBF7F1, #F3E8DC);
+      border-radius: 16px;
+      padding: 28px 24px;
+      font-family: 'Noto Sans JP', sans-serif;
+      color: var(--ink);
+    }
+    .staff-card-header {
+      text-align: center;
+      margin-bottom: 22px;
+    }
+    .staff-card-header .sc-clinic {
+      font-size: 11px;
+      color: var(--accent-deep);
+      letter-spacing: 0.1em;
+      font-weight: 700;
+    }
+    .staff-card-header .sc-name {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 22px;
+      font-weight: 700;
+      margin-top: 6px;
+    }
+    .staff-card-header .sc-date {
+      font-size: 12px;
+      color: var(--ink-faint);
+      margin-top: 4px;
+    }
+    .staff-card-section {
+      background: rgba(255,255,255,0.65);
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-bottom: 12px;
+    }
+    .staff-card-section:last-child { margin-bottom: 0; }
+    .staff-card-section .sc-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent-deep);
+      margin-bottom: 8px;
+      letter-spacing: 0.04em;
+    }
+    .staff-card-section .sc-text {
+      font-size: 14px;
+      line-height: 1.8;
+      color: var(--ink);
+      white-space: pre-wrap;
+    }
+    .staff-card-footer {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 10px;
+      color: var(--ink-faint);
+      letter-spacing: 0.05em;
+    }
+ 
     .loading, .error-msg, .empty-msg {
       text-align: center;
       padding: 60px 20px;
@@ -3469,28 +3705,6 @@ Dashboard · HTML
     return { num, max, pct: max ? num / max : 0 };
   }
  
-  function hexPoint(cx, cy, r, i) {
-    const angle = (Math.PI / 3) * i - Math.PI / 2;
-    return [cx + r * Math.cos(angle), cy + r * Math.sin(angle)];
-  }
- 
-  function buildHexagon(scores, size) {
-    const cx = size / 2, cy = size / 2, rOuter = size / 2 - 3;
-    const maxes = [6, 6, 6, 6, 6, 7];
-    const dataPts = CATS6.map((c, i) => {
-      const { pct } = parseScore(scores[c.key], maxes[i]);
-      const r = rOuter * Math.max(pct, 0.06);
-      return hexPoint(cx, cy, r, i);
-    });
-    const outerPts = CATS6.map((c, i) => hexPoint(cx, cy, rOuter, i));
-    const dataPath = dataPts.map(p => p.join(',')).join(' ');
-    const outerPath = outerPts.map(p => p.join(',')).join(' ');
-    return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
-      <polygon points="${outerPath}" fill="none" stroke="#EBE4DA" stroke-width="1"/>
-      <polygon points="${dataPath}" fill="#9C5A3C" fill-opacity="0.22" stroke="#9C5A3C" stroke-width="1.5"/>
-    </svg>`;
-  }
- 
   async function loadStaffList() {
     const clinic = getClinic();
     document.getElementById('list-label').textContent = clinic + ' ・ スタッフ一覧';
@@ -3508,7 +3722,6 @@ Dashboard · HTML
       document.getElementById('staff-list').innerHTML = data.map(s => {
         const initials = s.name.length >= 2 ? s.name[0] + s.name[1] : s.name;
         const scores = s.scores || {};
-        const hexSvg = buildHexagon(scores, 44);
         const rankClass = getRankClass(s.totalRank);
         const dateStr = s.date ? String(s.date).substring(0, 10) : '-';
  
@@ -3518,7 +3731,6 @@ Dashboard · HTML
             <div class="staff-name">${s.name}</div>
             <div class="staff-meta">最終面談 ${dateStr} ・ 評価者：${s.evaluator || '-'}</div>
           </div>
-          <div class="hexgrid">${hexSvg}</div>
           <span class="rank-badge ${rankClass}">${s.totalRank || '-'}</span>
           <span class="arrow-icon">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
@@ -3564,6 +3776,9 @@ Dashboard · HTML
         </div>`;
       }).join('');
  
+      window.__currentHistory = history;
+      window.__currentStaffName = staffName;
+ 
       const historyHtml = history.map((item, idx) => {
         const dateStr = String(item.date).substring(0, 10);
         const prev = history[idx + 1];
@@ -3582,6 +3797,8 @@ Dashboard · HTML
               .slice(0, 3).map(l => `<span class="action-tag">${l.replace(/^[\*・\-\s]+/, '').substring(0, 30)}</span>`).join('')
           : '';
  
+        const hasAI = item.aiSummary || item.aiGood || item.aiImprove || item.aiAction;
+ 
         return `<div class="history-item">
           <div class="history-header">
             <span class="history-date">${dateStr}</span>
@@ -3589,7 +3806,7 @@ Dashboard · HTML
             ${trendHtml}
             <span class="history-evaluator">評価者：${item.evaluator || '-'}</span>
           </div>
-          ${item.aiSummary || item.aiGood || item.aiImprove || item.aiAction ? `
+          ${hasAI ? `
           <div class="ai-card">
             <div class="ai-label">AI評価</div>
             ${item.aiSummary ? `<div class="ai-block"><div class="ai-block-title">面談要約</div><div class="ai-block-text">${item.aiSummary}</div></div>` : ''}
@@ -3598,7 +3815,10 @@ Dashboard · HTML
             ${item.aiAction ? `<div class="ai-block"><div class="ai-block-title">次回アクション</div><div class="action-tags">${actionTags}</div></div>` : ''}
           </div>` : '<div class="no-ai-note">AI評価データなし（次回面談から記録されます）</div>'}
           ${item.memo ? `<div class="memo-box">📝 ${item.memo}</div>` : ''}
-          ${item.docUrl ? `<a class="doc-link" href="${item.docUrl}" target="_blank">議事録を開く ↗</a>` : ''}
+          <div style="display:flex; align-items:center; gap:10px; margin-top:12px; flex-wrap:wrap;">
+            ${item.docUrl ? `<a class="doc-link" href="${item.docUrl}" target="_blank" style="margin-top:0;">議事録を開く ↗</a>` : ''}
+            ${hasAI ? `<button class="gen-card-btn" onclick="generateStaffCard(${idx})">スタッフ向け評価カードを生成</button>` : ''}
+          </div>
         </div>`;
       }).join('');
  
@@ -3649,6 +3869,65 @@ Dashboard · HTML
       const parts = String(v || '0').split('/');
       return sum + (parseInt(parts[0]) || 0);
     }, 0);
+  }
+ 
+  function generateStaffCard(idx) {
+    const item = window.__currentHistory[idx];
+    const staffName = window.__currentStaffName;
+    const clinic = getClinic();
+    const dateStr = String(item.date).substring(0, 10);
+ 
+    const sections = [];
+    if (item.aiSummary) sections.push({ label: '今月の振り返り', text: item.aiSummary });
+    if (item.aiGood) sections.push({ label: '良かった点', text: item.aiGood });
+    if (item.aiAction) sections.push({ label: '次のアクション', text: item.aiAction });
+ 
+    const sectionsHtml = sections.map(s => `
+      <div class="staff-card-section">
+        <div class="sc-label">${s.label}</div>
+        <div class="sc-text">${s.text}</div>
+      </div>`).join('');
+ 
+    const cardHtml = `
+      <div class="staff-card" id="staffCardForExport">
+        <div class="staff-card-header">
+          <div class="sc-clinic">${clinic}</div>
+          <div class="sc-name">${staffName} さん</div>
+          <div class="sc-date">${dateStr} の面談より</div>
+        </div>
+        ${sectionsHtml}
+        <div class="staff-card-footer">カドモリ AI人事評価</div>
+      </div>`;
+ 
+    const backdrop = document.createElement('div');
+    backdrop.className = 'card-modal-backdrop';
+    backdrop.id = 'cardModalBackdrop';
+    backdrop.innerHTML = `
+      <div class="card-modal-box">
+        ${cardHtml}
+        <div class="card-modal-actions">
+          <button onclick="closeCardModal()">閉じる</button>
+          <button class="primary" onclick="downloadStaffCard()">画像として保存</button>
+        </div>
+      </div>`;
+    backdrop.onclick = (e) => { if (e.target === backdrop) closeCardModal(); };
+    document.body.appendChild(backdrop);
+  }
+ 
+  function closeCardModal() {
+    const el = document.getElementById('cardModalBackdrop');
+    if (el) el.remove();
+  }
+ 
+  function downloadStaffCard() {
+    const el = document.getElementById('staffCardForExport');
+    if (!el || !window.html2canvas) return;
+    html2canvas(el, { scale: 2, backgroundColor: null }).then(canvas => {
+      const link = document.createElement('a');
+      link.download = (window.__currentStaffName || 'staff') + '_評価カード.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    });
   }
  
   loadStaffList();
